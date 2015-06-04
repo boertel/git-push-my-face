@@ -1,0 +1,3 @@
+#!/bin/bash
+
+git-push-myface.py -i -s --spotify -t >&- 2>&- &
