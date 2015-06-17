@@ -1,10 +1,28 @@
 #!/bin/bash
 
 
-sudo pip install twython
+if ! python -c "import twython"; then
+    sudo pip install twython
+fi
 
-mkdir ~/.gitshots/
+GITSHOTS_DIR="$HOME/.gitshots"
+if [ ! -d "$GITSHOTS_DIR" ]; then
+    echo "> creating $GITSHOTS_DIR"
+    mkdir -p $GITSHOTS_DIR
+fi
 
 if [ "$(uname)" == "Darwin" ]; then
-    brew install imagesnap
+    if ! type "imagesnap" > /dev/null; then
+        echo "> installing imagesnap"
+        brew install imagesnap
+    fi
 fi
+
+GIT_TEMPLATES_DIR="$HOME/.git-templates/"
+if [ ! -d "$GIT_TEMPLATES_DIR" ]; then
+    echo "> creating $GIT_TEMPLATES_DIR directory"
+    HOOKS=$GIT_TEMPLATES_DIR/hooks/
+    mkdir -p $HOOKS
+    ln -s ./post-commit $HOOKS
+fi
+git config --global init.templatedir '$GIT_TEMPLATES_DIR'
