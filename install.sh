@@ -23,6 +23,6 @@ if [ ! -d "$GIT_TEMPLATES_DIR" ]; then
     echo "> creating $GIT_TEMPLATES_DIR directory"
     HOOKS=$GIT_TEMPLATES_DIR/hooks/
     mkdir -p $HOOKS
-    ln -s ./post-commit $HOOKS
+    ln -s $PWD/post-commit $HOOKS
 fi
-git config --global init.templatedir '$GIT_TEMPLATES_DIR'
+git config --global init.templatedir $GIT_TEMPLATES_DIR
