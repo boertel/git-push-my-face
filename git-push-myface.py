@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import os
@@ -93,7 +93,7 @@ def photo():
         print devices
     arg = ''
     if len(devices) > 1:
-        arg = ' -d "%s"' % devices[1]
+        arg = ' -d "%s"' % devices[0]
     cmd = 'imagesnap -w 2 -q %s' + arg
     subprocess.call(cmd % filename, shell=True)
     return filename
