@@ -1,3 +1,7 @@
 #!/bin/bash
 
+if [[ -f "~/.no-gitpushmyface" ]]; then
+    exit 0
+fi
+
 git-push-myface.py -i -s --spotify -t >&- 2>&- &
