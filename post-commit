@@ -1,7 +1,23 @@
 #!/bin/bash
 
-if [[ -f "~/.no-gitpushmyface" ]]; then
-    exit 0
+NOGPMF=~/.no-gitpushmyface
+
+if [[ -f "$NOGPMF" ]]; then
+    CREATED_SINCE=$(echo "$(gdate +%s)-$(gdate +%s -r $NOGPMF)" | bc)
+    if [[ $CREATED_SINCE -gt 10 ]]; then
+        echo "It's been 12 hours since you muted git push my face"
+        read -p "Do you want to keep it muted? [y/n] " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+            # update last modified
+            touch $NOGPMF
+            exit 0
+        else
+            /bin/rm "$NOGPMF"
+        fi
+    else
+        exit 0
+    fi
 fi
 
 git-push-myface.py -i -s --spotify -t >&- 2>&- &
