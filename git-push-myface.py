@@ -71,16 +71,16 @@ def tweet(image, status=None):
         msg = 'update Twitter status with a image'
 
     if verbose:
-        print msg
+        print(msg)
 
 
 def get_devices():
-    devices = subprocess.Popen('imagesnap -l', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    return devices.communicate()[0].split('\n')[1:-1]
+    devices = subprocess.run(['imagesnap', '-l'], capture_output=True, text=True)
+    return devices.stdout.split('\n')[1:-1]
 
 def is_lid_opened():
-    lid = subprocess.Popen('ioreg -r -k AppleClamshellState -d 4 | grep AppleClamshellState  | head -1', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    return "No" in lid.communicate()[0]
+    lid = subprocess.run('ioreg -r -k AppleClamshellState -d 4 | grep AppleClamshellState | head -1', shell=True, capture_output=True, text=True)
+    return "No" in lid.stdout
 
 def can_run():
     return not (len(get_devices()) == 1 and not is_lid_opened())
@@ -90,7 +90,7 @@ def photo():
     filename = '/Users/ben/.gitshots/%s.jpg' % timestamp
     devices = get_devices()
     if verbose:
-        print devices
+        print(devices)
     arg = ''
     if len(devices) > 1:
         arg = ' -d "%s"' % devices[0]
@@ -102,7 +102,7 @@ def git_message():
     message = subprocess.Popen('git log --pretty=oneline --abbrev-commit -1 HEAD | cut -f 1 -d " "', shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
     message = message.communicate()[0]
     if verbose:
-        print 'last commit: %s' % message
+        print('last commit: %s' % message)
     return message
 
 def main(argv=None):
@@ -111,8 +111,8 @@ def main(argv=None):
 
     try:
         try:
-            opts, args = getopt.getopt(argv[1:], "histv", ["help", "image", "status", "tweet", "spotify"])
-        except getopt.error, msg:
+            opts, _ = getopt.getopt(argv[1:], "histv", ["help", "image", "status", "tweet", "spotify"])
+        except getopt.error as msg:
             raise Usage(msg)
 
         if not can_run():
@@ -147,14 +147,14 @@ def main(argv=None):
             if tweeter:
                 tweet(image, status)
             else:
-                print image, status
+                print(image, status)
 
-        except Exception, err:
+        except Exception as err:
             raise Usage(err)
 
-    except Usage, err:
-        print >>sys.stderr, err.msg
-        print >>sys.stderr, "for help use --help"
+    except Usage as err:
+        #print >>sys.stderr, err.msg
+        #print >>sys.stderr, "for help use --help"
         return 2
 
 if __name__ == "__main__":
